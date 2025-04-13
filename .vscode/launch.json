@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-TrabalhoiaApplication<trabalhoia>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.pedrocpnsz.trabalhoia.TrabalhoiaApplication",
+            "projectName": "trabalhoia",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
