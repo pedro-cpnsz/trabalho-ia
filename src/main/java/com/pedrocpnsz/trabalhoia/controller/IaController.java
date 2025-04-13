@@ -14,18 +14,19 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
-@RequestMapping("/ia")
+@RequestMapping("/")
 public class IaController {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
     @PostMapping("/chat")
+    // Recebe o prompt do usuário e envia para o modelo de IA
     public ResponseEntity<String> perguntar(@RequestBody Map<String, String> body) {
         String prompt = body.get("prompt");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-
+        
         Map<String, String> payload = new HashMap<>();
         payload.put("prompt", prompt);
 
@@ -35,4 +36,3 @@ public class IaController {
         return ResponseEntity.ok(resposta);
     }
 }
-

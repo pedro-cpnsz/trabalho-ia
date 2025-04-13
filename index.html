@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Teste IA Gemini</title>
+</head>
+<body>
+  <h1>Interagir com a IA</h1>
+  <form id="iaForm">
+    <label for="prompt">Digite sua pergunta:</label><br>
+    <input type="text" id="prompt" name="prompt" style="width: 300px;"><br><br>
+    <button type="submit">Enviar</button>
+  </form>
+
+  <h2>Resposta da IA:</h2>
+  <pre id="resposta"></pre>
+
+  <script>
+    document.getElementById('iaForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const prompt = document.getElementById('prompt').value;
+
+      const respostaEl = document.getElementById('resposta');
+      respostaEl.textContent = "Carregando...";
+
+      try {
+        const response = await fetch('http://localhost:8080/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ prompt: prompt })
+        });
+
+        const data = await response.json();
+        respostaEl.textContent = data.response || JSON.stringify(data, null, 2);
+      } catch (error) {
+        respostaEl.textContent = "Erro: " + error;
+      }
+    });
+  </script>
+</body>
+</html>
