@@ -1,12 +1,15 @@
 <div id="chat-container" class="chat-box">
-    <div *ngFor="let msg of messages" [ngClass]="msg.from">
-      <span>{{ msg.text }}</span>
-    </div>
-    <div *ngIf="loading" class="ai loading">IA está digitando...</div>
+  <div *ngFor="let msg of messages" [ngClass]="msg.from">
+    <span>{{ msg.text }}</span>
   </div>
-  
-  <form (ngSubmit)="sendPrompt()" class="input-box">
-    <input [(ngModel)]="prompt" name="prompt" placeholder="Digite sua mensagem..." autocomplete="off" />
-    <button type="submit" [disabled]="loading">Enviar</button>
-  </form>
-  
+  <div *ngIf="loading" class="ai loading">IA está digitando...</div>
+</div>
+
+<form (ngSubmit)="sendMessage()" class="input-box">
+  <div class="input-group input-group-addon-color">
+    <button (click)="resetChat()" class="btn btn-outline-secondary text-secondary-emphasis" type="button">Reiniciar</button>
+    <input [(ngModel)]="prompt" type="text" class="form-control" name="prompt" placeholder="Pergunte o que quiser!"
+      autocomplete="off">
+    <button (click)="sendMessage()" class="btn btn-outline-secondary text-secondary-emphasis" type="submit" [disabled]="loading">Enviar</button>
+  </div>
+</form>

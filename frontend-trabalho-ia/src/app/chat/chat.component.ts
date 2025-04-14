@@ -18,28 +18,47 @@ export class ChatComponent {
   prompt = '';
   messages: { from: 'user' | 'ai'; text: string }[] = [];
   loading = false;
+  private typingInterval: any;
 
   constructor(private http: HttpClient) {}
 
-  async sendPrompt() {
-    if (!this.prompt.trim()) return;
-
-    this.messages.push({ from: 'user', text: this.prompt });
-    const currentPrompt = this.prompt;
+  sendMessage() {
+    const userText = this.prompt.trim();
+    if (!userText) return;
+  
+    const userMessage: { from: 'user' | 'ai'; text: string } = { from: 'user', text: userText };
+    this.messages.push(userMessage);
     this.prompt = '';
     this.loading = true;
-
-    try {
-      const res: any = await this.http.post('http://localhost:5000/prompt', { prompt: currentPrompt }).toPromise();
-      this.messages.push({ from: 'ai', text: res.response });
-      this.saveHistory();
-    } catch (err) {
-      this.messages.push({ from: 'ai', text: 'Erro ao se comunicar com o servidor.' });
-    } finally {
-      this.loading = false;
-      setTimeout(() => this.scrollToBottom(), 100);
-    }
+    this.saveHistory();
+    this.scrollToBottom();
+  
+    this.http.post<{ response: string }>('http://localhost:5000/prompt', { prompt: userText }).subscribe({
+      next: (res) => {
+        const aiMessage: { from: 'user' | 'ai'; text: string } = { from: 'ai', text: '' };
+        this.messages.push(aiMessage);
+        this.saveHistory();
+  
+        this.typewriterEffect(
+          res.response,
+          (partialText) => {
+            aiMessage.text = partialText;
+            this.scrollToBottom();
+          },
+          () => {
+            this.loading = false;
+            this.saveHistory();
+          }
+        );
+      },
+      error: () => {
+        this.messages.push({ from: 'ai', text: 'Erro ao enviar a mensagem.' });
+        this.loading = false;
+        this.saveHistory();
+      }
+    });
   }
+  
 
   scrollToBottom() {
     const container = document.getElementById('chat-container');
@@ -61,8 +80,28 @@ export class ChatComponent {
         this.messages = JSON.parse(saved);
       }
     }
+  }
+
+  typewriterEffect(text: string, callback: (partialText: string) => void, done: () => void) {
+    let i = 0;
+    const interval = setInterval(() => {
+      if (i < text.length) {
+        callback(text.slice(0, i + 1));
+        i++;
+      } else {
+        clearInterval(interval);
+        done();
+      }
+    }, 20);
   }  
 
+  resetChat() {
+      this.http.post('http://localhost:5000/reset', {}).subscribe(() => {
+      this.messages = [];
+      this.saveHistory();
+    });
+  }
+  
   ngOnInit() {
     this.loadHistory();
   }

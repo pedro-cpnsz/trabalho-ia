@@ -35,6 +35,13 @@ def gerar_resposta():
     except Exception as e:
         return jsonify({"error": f"Erro interno: {str(e)}"}), 500
 
+# Função para reiniciar o chat 
+@app.route('/reset', methods=['POST'])
+def reset_chat():
+    global chat
+    chat = model.start_chat(history=[])
+    return jsonify({"message": "Chat reiniciado com sucesso."})
+
 # Inicia o servidor Flask
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
