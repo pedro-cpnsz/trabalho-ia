@@ -1,0 +1,12 @@
+<div id="chat-container" class="chat-box">
+    <div *ngFor="let msg of messages" [ngClass]="msg.from">
+      <span>{{ msg.text }}</span>
+    </div>
+    <div *ngIf="loading" class="ai loading">IA está digitando...</div>
+  </div>
+  
+  <form (ngSubmit)="sendPrompt()" class="input-box">
+    <input [(ngModel)]="prompt" name="prompt" placeholder="Digite sua mensagem..." autocomplete="off" />
+    <button type="submit" [disabled]="loading">Enviar</button>
+  </form>
+  

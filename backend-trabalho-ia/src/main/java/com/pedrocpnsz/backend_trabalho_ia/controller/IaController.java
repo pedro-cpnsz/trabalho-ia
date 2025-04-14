@@ -22,15 +22,16 @@ public class IaController {
     @PostMapping("/chat")
     // Recebe o prompt do usuário e envia para o modelo de IA
     public ResponseEntity<String> perguntar(@RequestBody Map<String, String> body) {
+        // Trata o prompt recebido do usuário
         String prompt = body.get("prompt");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        Map<String, String> payload = new HashMap<>();
-        payload.put("prompt", prompt);
+        Map<String, String> conteudo = new HashMap<>();
+        conteudo.put("prompt", prompt);
 
-        HttpEntity<Map<String, String>> request = new HttpEntity<>(payload, headers);
+        HttpEntity<Map<String, String>> request = new HttpEntity<>(conteudo, headers);
 
         String resposta = restTemplate.postForObject("http://localhost:5000/prompt", request, String.class);
         return ResponseEntity.ok(resposta);
